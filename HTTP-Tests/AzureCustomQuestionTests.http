@@ -1,0 +1,135 @@
+### Variables
+@endpoint = https://lang-custom-qa.cognitiveservices.azure.com
+@projectName = importtestproject01
+@apiVersion = 2021-10-01
+@deploymentName = production
+@subscriptionKey = **Replace me with your subscription key - from your Language resource in Azure**
+
+### Basic question test
+POST {{endpoint}}/language/:query-knowledgebases?projectName={{projectName}}&api-version={{apiVersion}}&deploymentName={{deploymentName}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+Content-Type: application/json
+
+{
+  "top": 3,
+  "question": "How can I change the default message from QnA Maker?",
+  "includeUnstructuredSources": true,
+  "confidenceScoreThreshold": 0.3,
+  "answerSpanRequest": {
+    "enable": true,
+    "topAnswersWithSpan": 1,
+    "confidenceScoreThreshold": 0.5
+  }
+}
+
+### Test with API category metadata filter - DOESNT WORK YET
+POST {{endpoint}}/language/:query-knowledgebases?projectName={{projectName}}&api-version={{apiVersion}}&deploymentName={{deploymentName}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+Content-Type: application/json
+
+{
+  "top": 3,
+  "question": "How do I programmatically create a KB?",
+  "includeUnstructuredSources": true,
+  "confidenceScoreThreshold": 0.3,
+  "answerSpanRequest": {
+    "enable": true,
+    "topAnswersWithSpan": 1,
+    "confidenceScoreThreshold": 0.5
+  },
+  "filters": {
+    "metadataFilter": {
+      "logicalOperation": "AND",
+      "metadata": [
+        {
+          "key": "category",
+          "value": "api"
+        }
+      ]
+    }
+  }
+}
+
+### Test with higher confidence threshold
+POST {{endpoint}}/language/:query-knowledgebases?projectName={{projectName}}&api-version={{apiVersion}}&deploymentName={{deploymentName}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+Content-Type: application/json
+
+{
+  "top": 5,
+  "question": "How do I programmatically update my KB?",
+  "includeUnstructuredSources": true,
+  "confidenceScoreThreshold": 0.7,
+  "answerSpanRequest": {
+    "enable": true,
+    "topAnswersWithSpan": 2,
+    "confidenceScoreThreshold": 0.7
+  }
+}
+
+### Test with OR logical operation in metadata filter
+POST {{endpoint}}/language/:query-knowledgebases?projectName={{projectName}}&api-version={{apiVersion}}&deploymentName={{deploymentName}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+Content-Type: application/json
+
+{
+  "top": 3,
+  "question": "How do I refresh endpoint keys?",
+  "includeUnstructuredSources": true,
+  "confidenceScoreThreshold": 0.3,
+  "filters": {
+    "metadataFilter": {
+      "logicalOperation": "OR",
+      "metadata": [
+        {
+          "key": "source",
+          "value": "Editorial"
+        }
+      ]
+    }
+  }
+}
+
+### Test with disabled answer span
+POST {{endpoint}}/language/:query-knowledgebases?projectName={{projectName}}&api-version={{apiVersion}}&deploymentName={{deploymentName}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+Content-Type: application/json
+
+{
+  "top": 3,
+  "question": "How can I programmatically access QnA Maker?",
+  "includeUnstructuredSources": true,
+  "confidenceScoreThreshold": 0.3,
+  "answerSpanRequest": {
+    "enable": false
+  }
+}
+
+### Custom test with your own parameters
+# Replace the values below with your specific test case
+POST {{endpoint}}/language/:query-knowledgebases?projectName={{projectName}}&api-version={{apiVersion}}&deploymentName={{deploymentName}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+Content-Type: application/json
+
+{
+  "top": 3,
+  "question": "YOUR_QUESTION_HERE",
+  "includeUnstructuredSources": true,
+  "confidenceScoreThreshold": 0.5,
+  "answerSpanRequest": {
+    "enable": true,
+    "topAnswersWithSpan": 1,
+    "confidenceScoreThreshold": 0.6
+  },
+  "filters": {
+    "metadataFilter": {
+      "logicalOperation": "AND",
+      "metadata": [
+        {
+          "key": "YOUR_ADDITIONAL_PROP_KEY_HERE",
+          "value": "YOUR_ADDITIONAL_PROP_VALUE_HERE"
+        }
+      ]
+    }
+  }
+}
