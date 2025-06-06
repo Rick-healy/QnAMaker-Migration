@@ -74,16 +74,11 @@ The first step is to export your existing knowledgebase from QnA Maker in JSON f
 
 ### Using the QnA Maker Download API
 
-1. Use the [QnA Maker Download API](https://learn.microsoft.com/en-us/rest/api/qnamaker/knowledgebase/download?view=rest-qnamaker-v4.0&tabs=HTTP) to export your knowledgebase:
-   ```http
-   GET /knowledgebases/{kbId}/Export
-   Host: {qnaServiceHostName}
-   Authorization: EndpointKey {endpoint_key}
-   ```
+1. Use the [QnA Maker Download API](https://learn.microsoft.com/en-us/rest/api/qnamaker/knowledgebase/download?view=rest-qnamaker-v4.0&tabs=HTTP) to export your knowledgebase.
 
 2. Save the API response as a JSON file on your local machine. You might use Postman, curl, or any other API tool to make this request and save the response.
 
-3. This JSON file contains your knowledgebase content but is not in a format that Azure Language Studio can directly import. It will serve as the input for our project generation script.
+3. This JSON file contains your knowledgebase content but is not in a format that Azure Language Studio can directly import as a project. It will serve as the input for our project generation script.
 
 ### Input JSON Format Example
 
