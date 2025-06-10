@@ -34,7 +34,10 @@ A QnA Maker knowledgebase file is not equivalent to an Azure Language Studio pro
 The `json_to_tsv_converter.py` script generates a complete Azure Language Studio project by:
 
 1. Taking a QnA Maker JSON knowledgebase export file (obtained via the [QnA Maker Download API](https://learn.microsoft.com/en-us/rest/api/qnamaker/knowledgebase/download?view=rest-qnamaker-v4.0&tabs=HTTP))
-2. Converting the knowledgebase content to the required TSV format
+2. Converting the knowledgebase content to the required TSV format:
+   - Creates a separate row for each question in the questions array
+   - Cleans special characters (tabs, newlines) to maintain TSV integrity
+   - Formats metadata as pipe-separated key-value pairs (`key1:value1|key2:value2`)
 3. Generating the additional required project files:
    - `[filename].tsv` - Primary file containing all question/answer pairs (converted from the knowledgebase)
    - `Settings.tsv` - Contains project settings and configuration (generated with default values)
@@ -98,6 +101,41 @@ Your input JSON should follow this structure (this is the standard format provid
       "context": {
         "isContextOnly": false,
         "prompts": []
+```
+
+### Output TSV Format
+
+The script converts the JSON into a TSV file with the following format:
+
+1. **Main Question/Answer File ([filename].tsv):**
+   - Each row corresponds to one question-answer pair
+   - If multiple questions exist for the same answer, each gets its own row with the same answer
+   - Special characters (tabs, newlines) are removed to preserve TSV integrity
+   - Fields are tab-separated with the following columns:
+     - Question
+     - Answer
+     - Source
+     - Metadata (formatted as `key1:value1|key2:value2`)
+     - SuggestedQuestions
+     - IsContextOnly
+     - Prompts
+     - QnaId
+     - SourceDisplayName
+
+2. **Settings.tsv:**
+   - Contains configuration settings for the Azure Language Studio project
+   - Includes description, language, and default answer settings
+
+3. **Synonyms.tsv:**
+   - Contains synonym mappings for the Azure Language Studio project
+   - Initially created as an empty template that can be populated later
+
+#### Sample Output TSV Format:
+
+```
+Question	Answer	Source	Metadata	SuggestedQuestions	IsContextOnly	Prompts	QnaId	SourceDisplayName
+How do I create a KB?	You can use our REST APIs...	Custom Editorial	category:api|topic:programming		False	[{"displayOrder":1,"qnaId":3,"displayText":"Update KB"}]	2	Custom Editorial
+```
       }
     },
     {
