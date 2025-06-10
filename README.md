@@ -130,53 +130,16 @@ The script converts the JSON into a TSV file with the following format:
    - Contains synonym mappings for the Azure Language Studio project
    - Initially created as an empty template that can be populated later
 
-#### Sample Output TSV Format:
 
+
+## Sample output files
+
+### Main TSV File ([filename].tsv)
 ```
 Question	Answer	Source	Metadata	SuggestedQuestions	IsContextOnly	Prompts	QnaId	SourceDisplayName
 How do I create a KB?	You can use our REST APIs...	Custom Editorial	category:api|topic:programming		False	[{"displayOrder":1,"qnaId":3,"displayText":"Update KB"}]	2	Custom Editorial
 ```
-      }
-    },
-    {
-      "id": 2,
-      "answer": "You can use our REST apis to create a KB.",
-      "source": "Custom Editorial",
-      "questions": [
-        "How do I programmatically create a KB?"
-      ],
-      "metadata": [
-        {
-          "name": "category",
-          "value": "api"
-        }
-      ],
-      "context": {
-        "isContextOnly": false,
-        "prompts": [
-          {
-            "displayOrder": 1,
-            "qnaId": 3,
-            "displayText": "Update KB"
-          }
-        ]
-      }
-    }
-  ]
-}
-```
-
-## Output Files Format
-
-### Main TSV File ([filename].tsv)
-
-```
-Question	Answer	Source	Metadata	SuggestedQuestions	IsContextOnly	Prompts	QnaId	SourceDisplayName
-How can I change the default message from QnA Maker?	You can change the default message if you use the QnAMakerDialog.	Custom Editorial	[]	[]	False	[]	1	Custom Editorial
-How do I programmatically create a KB?	You can use our REST apis to create a KB.	Custom Editorial	[{"name": "category", "value": "api"}]	[]	False	[{"displayOrder": 1, "qnaId": 3, "displayText": "Update KB"}]	2	Custom Editorial
-```
 This file contains the converted knowledgebase content from your QnA Maker export.
-
 ### Settings.tsv
 
 ```
