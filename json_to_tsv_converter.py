@@ -77,6 +77,32 @@ def convert_json_to_tsv(json_file_path):
         sys.exit(1)
 
 
+def clean_text_for_tsv(text):
+    """
+    Clean text by removing or replacing characters that could break TSV format.
+    
+    Args:
+        text (str): Text to clean
+        
+    Returns:
+        str: Cleaned text
+    """
+    if not text:
+        return ""
+        
+    # Replace tab characters with spaces
+    text = text.replace('\t', ' ')
+    
+    # Replace newlines with a space
+    text = text.replace('\n', ' ')
+    text = text.replace('\r', ' ')
+    
+    # Remove multiple spaces
+    while '  ' in text:
+        text = text.replace('  ', ' ')
+        
+    return text.strip()
+
 def create_qnas_tsv(data, folder_path, base_name):
     """
     Create the QnAs TSV file from the JSON data.
@@ -98,12 +124,12 @@ def create_qnas_tsv(data, folder_path, base_name):
             
             # Write data
             for qna in data.get("qnaDocuments", []):
-                # Get the first question or empty string if no questions
-                question = qna.get("questions", [""])[0]
+                # Get questions array
+                questions = qna.get("questions", [""])
                 
-                # Get other fields
-                answer = qna.get("answer", "")
-                source = qna.get("source", "")
+                # Get other fields and clean them
+                answer = clean_text_for_tsv(qna.get("answer", ""))
+                source = clean_text_for_tsv(qna.get("source", ""))
                 metadata = json.dumps(qna.get("metadata", []))
                 
                 # Format context data
@@ -113,14 +139,19 @@ def create_qnas_tsv(data, folder_path, base_name):
                 
                 # Set ID and source display name
                 qna_id = str(qna.get("id", ""))
-                source_display_name = qna.get("source", "")  # Using source as display name if not specified
+                source_display_name = clean_text_for_tsv(qna.get("source", ""))  # Using source as display name if not specified
                 
                 # Default suggested questions as empty array
                 suggested_questions = "[]"
                 
-                # Write the row
-                row = f"{question}\t{answer}\t{source}\t{metadata}\t{suggested_questions}\t{is_context_only}\t{prompts}\t{qna_id}\t{source_display_name}\n"
-                tsv_file.write(row)
+                # Create a row for each question
+                for question in questions:
+                    # Clean the question text
+                    clean_question = clean_text_for_tsv(question)
+                    
+                    # Write the row
+                    row = f"{clean_question}\t{answer}\t{source}\t{metadata}\t{suggested_questions}\t{is_context_only}\t{prompts}\t{qna_id}\t{source_display_name}\n"
+                    tsv_file.write(row)
                 
         print(f"Created QnAs file: {output_file_path}")
         
