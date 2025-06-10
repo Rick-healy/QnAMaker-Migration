@@ -126,11 +126,17 @@ def create_qnas_tsv(data, folder_path, base_name):
             for qna in data.get("qnaDocuments", []):
                 # Get questions array
                 questions = qna.get("questions", [""])
-                
-                # Get other fields and clean them
+                  # Get other fields and clean them
                 answer = clean_text_for_tsv(qna.get("answer", ""))
                 source = clean_text_for_tsv(qna.get("source", ""))
-                metadata = json.dumps(qna.get("metadata", []))
+                
+                # Format metadata as pipe-separated key:value pairs
+                metadata_list = qna.get("metadata", [])
+                if metadata_list:
+                    metadata_parts = [f"{item.get('name', '')}:{item.get('value', '')}" for item in metadata_list]
+                    metadata = "|".join(metadata_parts)
+                else:
+                    metadata = ""
                 
                 # Format context data
                 context = qna.get("context", {})
@@ -140,9 +146,8 @@ def create_qnas_tsv(data, folder_path, base_name):
                 # Set ID and source display name
                 qna_id = str(qna.get("id", ""))
                 source_display_name = clean_text_for_tsv(qna.get("source", ""))  # Using source as display name if not specified
-                
-                # Default suggested questions as empty array
-                suggested_questions = "[]"
+                  # Default suggested questions as empty array
+                suggested_questions = ""
                 
                 # Create a row for each question
                 for question in questions:
